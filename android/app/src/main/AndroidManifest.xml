@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="onde_assistir"
+        android:label="Onde assistir"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
