@@ -25,18 +25,21 @@ class MovieDetailsPage extends StatelessWidget {
           } else {
             final movie = snapshot.data;
 
-            return ListView(
-              children: <Widget>[
-                Image.network(context.watch<MoviesProvider>().getImageUrl(movie!.posterPath), width: 200, fit: BoxFit.cover),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(movie.title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Text(movie.overview, style: const TextStyle(fontSize: 16)),
-                ),
-              ],
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 20),
+              child: ListView(
+                children: <Widget>[
+                  Image.network(context.watch<MoviesProvider>().getImageUrl(movie!.posterPath), width: 200, fit: BoxFit.cover),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(movie.title, style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(movie.overview, style: const TextStyle(fontSize: 16)),
+                  ),
+                ],
+              ),
             );
           }
         },
