@@ -7,6 +7,7 @@ import 'package:cine_panda/providers/widgets_provider.dart';
 import 'package:cine_panda/views/discover.dart';
 import 'package:cine_panda/views/likes.dart';
 import 'package:cine_panda/widgets/bottom_navbar.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -55,7 +56,7 @@ class _MainPageState extends State<MainPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('CinePanda'),
+        title: SvgPicture.asset('assets/logo.svg', semanticsLabel: 'CinePanda', height: 40),
       ),
       body: Center(child: _tabPagesIndex.elementAt(currentIndex)),
       bottomNavigationBar: const BottomNavbar(),
