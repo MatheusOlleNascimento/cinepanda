@@ -8,6 +8,8 @@
 .history
 .svn/
 .env
+.todo
+
 migrate_working_dir/
 
 *.iml

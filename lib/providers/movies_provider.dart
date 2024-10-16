@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:onde_assistir/models/movie.dart';
+import 'package:cine_panda/models/movie.dart';
 import '../services/api_service.dart';
 
-class ViewModel extends ChangeNotifier {
+class MoviesProvider extends ChangeNotifier {
   ApiService apiService = ApiService();
   List<Movie> _movies = [];
   bool _isLoading = false;

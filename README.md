@@ -1,4 +1,4 @@
-# onde_assistir
+# CinePanda
 
 A new Flutter project.
 

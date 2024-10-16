@@ -1,4 +1,4 @@
-name: onde_assistir
+name: cine_panda
 description: "Veja onde assistir seus filmes favoritos."
 publish_to: "none"
 version: 1.0.0+1
@@ -12,6 +12,8 @@ dependencies:
   provider: ^6.1.2
   flutter_dotenv: ^5.2.1
   flutter_launcher_icons: ^0.14.1
+  google_nav_bar: ^5.0.6
+  line_icons: ^2.0.3
 
 dev_dependencies:
   flutter_test:

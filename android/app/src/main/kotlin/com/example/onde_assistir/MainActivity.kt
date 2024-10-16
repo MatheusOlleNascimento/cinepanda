@@ -1,4 +1,4 @@
-package com.example.onde_assistir
+package com.example.cine_panda
 
 import io.flutter.embedding.android.FlutterActivity
 

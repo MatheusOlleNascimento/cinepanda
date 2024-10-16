@@ -1,24 +1,31 @@
+import 'package:cine_panda/views/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:onde_assistir/viewmodels/view_model.dart';
+import 'package:cine_panda/providers/movies_provider.dart';
+import 'package:cine_panda/providers/widgets_provider.dart';
+import 'package:cine_panda/views/discover.dart';
+import 'package:cine_panda/views/likes.dart';
+import 'package:cine_panda/widgets/bottom_navbar.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => ViewModel()),
+        ChangeNotifierProvider(create: (_) => MoviesProvider()),
+        ChangeNotifierProvider(create: (_) => WidgetsProvider()),
       ],
       child: MaterialApp(
-        title: 'Onde Assistir',
+        title: 'CinePanda',
         theme: ThemeData.dark().copyWith(
           scaffoldBackgroundColor: Colors.black,
           colorScheme: const ColorScheme.dark(
@@ -27,59 +34,37 @@ class MyApp extends StatelessWidget {
             inversePrimary: Colors.black,
           ),
         ),
-        home: const MyHomePage(title: 'Filmes'),
+        home: const MainPage(),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  final String title;
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MainPage> createState() => _MainPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<ViewModel>(context, listen: false).fetchMovies(1);
-    });
-  }
+class _MainPageState extends State<MainPage> {
+  static const List<Widget> _tabPagesIndex = <Widget>[
+    HomePage(),
+    LikesPage(),
+    DiscoverPage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = context.watch<WidgetsProvider>().currentIndex;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text('CinePanda'),
       ),
-      body: Center(
-        child: Consumer<ViewModel>(
-          builder: (context, viewModel, child) {
-            if (viewModel.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (viewModel.movies.isEmpty) {
-              return const Center(child: Text('Nenhum filme encontrado'));
-            }
-            return ListView.builder(
-              itemCount: viewModel.movies.length,
-              itemBuilder: (context, index) {
-                final movie = viewModel.movies[index];
-                return ListTile(
-                  leading: Image.network(viewModel.getImageUrl(movie.posterPath)),
-                  title: Text(movie.title),
-                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                );
-              },
-            );
-          },
-        ),
-      ),
+      body: Center(child: _tabPagesIndex.elementAt(currentIndex)),
+      bottomNavigationBar: const BottomNavbar(),
     );
   }
 }
