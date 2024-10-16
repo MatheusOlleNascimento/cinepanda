@@ -1,3 +1,4 @@
+import 'package:cine_panda/utils/theme.dart';
 import 'package:cine_panda/views/home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -26,14 +27,7 @@ class App extends StatelessWidget {
       ],
       child: MaterialApp(
         title: 'CinePanda',
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: Colors.black,
-          colorScheme: const ColorScheme.dark(
-            primary: Colors.red,
-            onPrimary: Colors.white,
-            inversePrimary: Colors.black,
-          ),
-        ),
+        theme: CustomTheme.darkTheme,
         home: const MainPage(),
       ),
     );
