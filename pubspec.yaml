@@ -27,8 +27,3 @@ flutter:
     - assets/
     - assets/animations/
     - .env
-
-flutter_icons:
-  android: true
-  ios: true
-  image_path: "assets/icon.png"
