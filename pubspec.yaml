@@ -25,6 +25,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/
+    - assets/animations/
     - .env
 
 flutter_icons:
