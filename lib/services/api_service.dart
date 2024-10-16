@@ -1,3 +1,4 @@
+import 'package:cine_panda/models/movie_details.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -21,13 +22,13 @@ class ApiService {
     }
   }
 
-  Future<Movie> fetchMovieDetails(int id) async {
+  Future<MovieDetails> fetchMovieDetails(int id) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/movie/$id'),
+      Uri.parse('$apiUrl/movie/$id?language=pt-BR'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {
-      return Movie.fromJson(jsonDecode(response.body));
+      return MovieDetails.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
     }
@@ -35,7 +36,7 @@ class ApiService {
 
   Future<List<Movie>> searchMovies(String query) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/search/movie?query=$query'),
+      Uri.parse('$apiUrl/search/movie?language=pt-BR?query=$query'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {

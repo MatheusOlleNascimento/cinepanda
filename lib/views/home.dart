@@ -1,4 +1,6 @@
+import 'package:cine_panda/views/movie_details.dart';
 import 'package:flutter/material.dart';
+import 'package:cine_panda/providers/widgets_provider.dart';
 import 'package:cine_panda/providers/movies_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,20 +25,29 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Consumer<MoviesProvider>(
-      builder: (context, viewModel, child) {
-        if (viewModel.isLoading) {
+      builder: (context, moviesProvider, child) {
+        if (moviesProvider.isLoading) {
           return const Center(child: CircularProgressIndicator());
-        } else if (viewModel.movies.isEmpty) {
+        } else if (moviesProvider.movies.isEmpty) {
           return const Center(child: Text('Nenhum filme encontrado'));
         }
         return ListView.builder(
-          itemCount: viewModel.movies.length,
+          itemCount: moviesProvider.movies.length,
           itemBuilder: (context, index) {
-            final movie = viewModel.movies[index];
-            return ListTile(
-              leading: Image.network(viewModel.getImageUrl(movie.posterPath)),
-              title: Text(movie.title),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+            final movie = moviesProvider.movies[index];
+            return GestureDetector(
+              onTap: () {
+                Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MovieDetailsPage()),
+                );
+              },
+              child: ListTile(
+                leading: Image.network(moviesProvider.getImageUrl(movie.posterPath)),
+                title: Text(movie.title),
+                contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+              ),
             );
           },
         );
