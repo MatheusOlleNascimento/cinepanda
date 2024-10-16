@@ -1,4 +1,4 @@
-import 'package:cine_panda/models/movie.dart';
+import '../imports/models.dart';
 
 class MovieDetails extends Movie {
   final String overview;

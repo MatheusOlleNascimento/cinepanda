@@ -2,8 +2,9 @@ import 'package:cine_panda/utils/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:cine_panda/providers/widgets_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../imports/providers.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});

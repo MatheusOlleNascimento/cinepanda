@@ -1,14 +1,11 @@
-import 'package:cine_panda/utils/theme.dart';
-import 'package:cine_panda/views/home.dart';
-import 'package:cine_panda/widgets/logo_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:cine_panda/providers/movies_provider.dart';
-import 'package:cine_panda/providers/widgets_provider.dart';
-import 'package:cine_panda/views/discover.dart';
-import 'package:cine_panda/views/likes.dart';
-import 'package:cine_panda/widgets/bottom_navbar.dart';
 import 'package:provider/provider.dart';
+
+import 'imports/providers.dart';
+import 'imports/utils.dart';
+import 'imports/views.dart';
+import 'imports/widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

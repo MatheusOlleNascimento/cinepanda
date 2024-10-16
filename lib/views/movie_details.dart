@@ -1,8 +1,8 @@
-import 'package:cine_panda/providers/movies_provider.dart';
-import 'package:cine_panda/providers/widgets_provider.dart';
-import 'package:cine_panda/widgets/logo_appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../imports/providers.dart';
+import '../imports/widgets.dart';
 
 class MovieDetailsPage extends StatelessWidget {
   const MovieDetailsPage({super.key});

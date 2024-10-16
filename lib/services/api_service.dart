@@ -1,8 +1,8 @@
-import 'package:cine_panda/models/movie_details.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:cine_panda/models/movie.dart';
+
+import '../imports/models.dart';
 
 class ApiService {
   final String apiUrl = dotenv.env['API_URL'] ?? 'URL não definida';

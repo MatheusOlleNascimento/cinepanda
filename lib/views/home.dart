@@ -1,8 +1,8 @@
-import 'package:cine_panda/views/movie_details.dart';
 import 'package:flutter/material.dart';
-import 'package:cine_panda/providers/widgets_provider.dart';
-import 'package:cine_panda/providers/movies_provider.dart';
 import 'package:provider/provider.dart';
+
+import '../imports/providers.dart';
+import '../imports/views.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});

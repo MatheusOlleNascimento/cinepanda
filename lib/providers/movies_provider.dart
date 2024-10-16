@@ -1,7 +1,7 @@
-import 'package:cine_panda/models/movie_details.dart';
 import 'package:flutter/material.dart';
-import 'package:cine_panda/models/movie.dart';
-import '../services/api_service.dart';
+
+import '../imports/models.dart';
+import '../imports/services.dart';
 
 class MoviesProvider extends ChangeNotifier {
   ApiService apiService = ApiService();
