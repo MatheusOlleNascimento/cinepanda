@@ -81,7 +81,7 @@ class MovieDetailsPage extends StatelessWidget {
                                 const SizedBox(width: 20),
                                 const Icon(Icons.access_time, size: 18, color: Colors.grey),
                                 const SizedBox(width: 5),
-                                Text('${movie.runtime} min', style: const TextStyle(fontSize: 16, color: Colors.grey)),
+                                Text(formatRuntime(movie.runtime), style: const TextStyle(fontSize: 16, color: Colors.grey)),
                               ],
                             ),
                           ],
@@ -110,7 +110,7 @@ class MovieDetailsPage extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(15),
                         child: Text(movie.overview, style: const TextStyle(fontSize: 16)),
                       ),
                       FutureBuilder(
