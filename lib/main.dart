@@ -22,6 +22,7 @@ class App extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => MoviesProvider()),
         ChangeNotifierProvider(create: (_) => WidgetsProvider()),
+        ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
       ],
       child: MaterialApp(
         title: 'CinePanda',
@@ -41,7 +42,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   static const List<Widget> _tabPagesIndex = <Widget>[
-    HomePage(),
+    MoviesPage(),
     LikesPage(),
     DiscoverPage(),
   ];
