@@ -10,6 +10,9 @@ class CustomTheme {
   static const Color white = Color(0xFFFFFFFF);
   static const Color whiteSecondary = Color(0xFFEDF2F4);
 
+  static const Color grey = Color(0XFF272727);
+  static const Color greySecondary = Color(0XFF1F1F1F);
+
   static const Color black = Color(0XFF000000);
   static const Color blackSecondary = Color(0XFF090909);
 

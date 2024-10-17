@@ -15,6 +15,7 @@ dependencies:
   google_nav_bar: ^5.0.6
   line_icons: ^2.0.3
   flutter_svg: ^2.0.10+1
+  intl: ^0.19.0
 
 dev_dependencies:
   flutter_test:
