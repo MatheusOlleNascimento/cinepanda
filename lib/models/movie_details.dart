@@ -5,6 +5,7 @@ class MovieDetails extends Movie {
   final List<String> genreNames;
   final double voteAverage;
   final String releaseDate;
+  final int runtime;
 
   MovieDetails({
     required super.id,
@@ -14,6 +15,7 @@ class MovieDetails extends Movie {
     required this.voteAverage,
     required this.genreNames,
     required this.releaseDate,
+    required this.runtime,
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) {
@@ -26,6 +28,7 @@ class MovieDetails extends Movie {
       overview: json['overview'],
       voteAverage: json['vote_average'],
       releaseDate: json['release_date'],
+      runtime: json['runtime'],
       genreNames: genreNames,
     );
   }

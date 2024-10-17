@@ -34,6 +34,34 @@ class ApiService {
     }
   }
 
+  Future<List<MovieProvider>> fetchWatchProviders(int id) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/movie/$id/watch/providers'),
+      headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> providersJson = jsonDecode(response.body)['results'];
+
+      if (providersJson.containsKey('BR')) {
+        final brProvidersJson = providersJson['BR'];
+
+        final List<MovieProvider> providers = [];
+
+        if (brProvidersJson['flatrate'] != null) {
+          for (var provider in brProvidersJson['flatrate']) {
+            providers.add(MovieProvider.fromJson(provider));
+          }
+        }
+        return providers;
+      } else {
+        return [];
+      }
+    } else {
+      throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
+    }
+  }
+
   Future<List<Movie>> searchMovies(String query) async {
     final response = await http.get(
       Uri.parse('$apiUrl/search/movie?language=pt-BR?query=$query'),

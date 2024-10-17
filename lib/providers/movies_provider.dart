@@ -35,7 +35,22 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
+  Future<List<MovieProvider>> fetchWatchProviders(int id) async {
+    _isLoading = true;
+    try {
+      return await apiService.fetchWatchProviders(id);
+    } catch (e) {
+      throw Exception('Failed: Error $e');
+    } finally {
+      _isLoading = false;
+    }
+  }
+
   getImageUrl(String path) {
     return 'https://image.tmdb.org/t/p/w500$path';
+  }
+
+  getProviderLogoUrl(String path) {
+    return 'https://image.tmdb.org/t/p/w200$path';
   }
 }
