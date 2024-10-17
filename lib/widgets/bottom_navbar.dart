@@ -18,24 +18,24 @@ class BottomNavbarState extends State<BottomNavbar> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: CustomTheme.yellow,
+        color: CustomTheme.red,
         boxShadow: [BoxShadow(blurRadius: 20, color: Colors.black.withOpacity(.1))],
       ),
       child: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
           child: GNav(
             gap: 8,
-            activeColor: Colors.black,
+            activeColor: Colors.white,
             iconSize: 24,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             duration: const Duration(milliseconds: 400),
-            tabBackgroundColor: CustomTheme.yellowSecondary,
-            color: Colors.black,
+            tabBackgroundColor: CustomTheme.redSecondary,
+            color: Colors.white,
             tabs: const [
-              GButton(icon: LineIcons.home, text: 'Início'),
-              GButton(icon: LineIcons.heart, text: 'Favoritos'),
-              GButton(icon: LineIcons.random, text: 'Mê surpreenda'),
+              GButton(icon: LineIcons.heart, text: 'Favoritos', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+              GButton(icon: LineIcons.home, text: 'Início', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+              GButton(icon: LineIcons.random, text: 'Mê surpreenda', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
             ],
             selectedIndex: Provider.of<WidgetsProvider>(context).currentIndex,
             onTabChange: (index) {

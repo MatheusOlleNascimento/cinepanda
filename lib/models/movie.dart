@@ -12,4 +12,21 @@ class Movie {
       posterPath: json['poster_path'],
     );
   }
+
+  //TODO Isolar para uma classe somente para o banco de dados
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'posterPath': posterPath,
+    };
+  }
+
+  factory Movie.fromMap(Map<String, dynamic> map) {
+    return Movie(
+      id: map['id'],
+      title: map['title'],
+      posterPath: map['posterPath'],
+    );
+  }
 }

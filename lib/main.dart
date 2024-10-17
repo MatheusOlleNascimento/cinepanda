@@ -1,3 +1,4 @@
+import 'package:cine_panda/database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
@@ -10,6 +11,8 @@ import 'imports/widgets.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+  final dbHelper = DatabaseHelper();
+  await dbHelper.database;
   runApp(const App());
 }
 
@@ -42,8 +45,8 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   static const List<Widget> _tabPagesIndex = <Widget>[
-    MoviesPage(),
     LikesPage(),
+    MoviesPage(),
     DiscoverPage(),
   ];
 

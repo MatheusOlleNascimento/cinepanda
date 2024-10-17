@@ -1,3 +1,4 @@
+import 'package:cine_panda/database/database_helper.dart';
 import 'package:flutter/material.dart';
 
 import '../imports/models.dart';
@@ -6,6 +7,8 @@ import '../imports/services.dart';
 class MoviesProvider extends ChangeNotifier {
   ApiService apiService = ApiService();
   List<Movie> _movies = [];
+  final List<int> _favoriteIds = [];
+
   bool _isLoading = false;
 
   List<Movie> get movies => _movies;
@@ -46,11 +49,40 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
-  getImageUrl(String path) {
+  Future<void> addFavorite(Movie movie) async {
+    final dbHelper = DatabaseHelper();
+    await dbHelper.addFavorite(movie);
+    _favoriteIds.add(movie.id);
+    notifyListeners();
+  }
+
+  Future<void> removeFavorite(int id) async {
+    final dbHelper = DatabaseHelper();
+    await dbHelper.removeFavorite(id);
+    _favoriteIds.remove(id);
+    notifyListeners();
+  }
+
+  Future<bool> checkFavorite(int id) async {
+    final dbHelper = DatabaseHelper();
+    if (await dbHelper.isFavorite(id)) {
+      _favoriteIds.add(id);
+      return true;
+    } else {
+      _favoriteIds.remove(id);
+      return false;
+    }
+  }
+
+  bool isFavorite(int id) {
+    return _favoriteIds.contains(id);
+  }
+
+  String getImageUrl(String path) {
     return 'https://image.tmdb.org/t/p/w500$path';
   }
 
-  getProviderLogoUrl(String path) {
+  String getProviderLogoUrl(String path) {
     return 'https://image.tmdb.org/t/p/w200$path';
   }
 }

@@ -38,11 +38,80 @@ class MovieDetailsPage extends StatelessWidget {
                     children: <Widget>[
                       Image.network(
                         context.watch<MoviesProvider>().getImageUrl(movie!.posterPath),
-                        width: 200,
+                        height: 500,
                         fit: BoxFit.cover,
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 15, top: 20),
+                        padding: const EdgeInsets.only(top: 10, left: 5, right: 5),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Expanded(
+                              child: Card(
+                                color: CustomTheme.red,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 14),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.play_arrow, size: 20),
+                                      SizedBox(width: 5),
+                                      Text('Assistir trailer', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Consumer<MoviesProvider>(
+                                builder: (context, moviesProvider, child) {
+                                  final isFavorite = moviesProvider.isFavorite(movie.id);
+
+                                  return GestureDetector(
+                                    onTap: () async {
+                                      if (isFavorite) {
+                                        await moviesProvider.removeFavorite(movie.id);
+                                      } else {
+                                        await moviesProvider.addFavorite(movie);
+                                      }
+                                      await moviesProvider.checkFavorite(movie.id);
+                                    },
+                                    child: Card(
+                                      color: CustomTheme.grey,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              isFavorite ? Icons.favorite : Icons.favorite_border,
+                                              size: 20,
+                                              color: isFavorite ? Colors.red : Colors.white,
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              isFavorite ? 'Desfavoritar' : 'Favoritar',
+                                              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, right: 15, top: 5),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [

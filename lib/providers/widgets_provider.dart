@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class WidgetsProvider extends ChangeNotifier {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
   int _selectedMovieId = 0;
 
   int get currentIndex => _currentIndex;
