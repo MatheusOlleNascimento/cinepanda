@@ -1,6 +1,7 @@
 import 'package:cine_panda/imports/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:skeletonizer/skeletonizer.dart';
 
 import '../imports/models.dart';
 import '../imports/providers.dart';
@@ -36,9 +37,7 @@ class _MoviesPageState extends State<MoviesPage> {
 
         return Consumer<MoviesProvider>(
           builder: (context, moviesProvider, child) {
-            if (moviesProvider.isLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (moviesProvider.movies.isEmpty) {
+            if (moviesProvider.movies.isEmpty) {
               return const Center(child: Text('Nenhum filme encontrado'));
             }
 
@@ -55,12 +54,17 @@ class _MoviesPageState extends State<MoviesPage> {
                 children: [
                   TextField(
                     controller: _searchController,
-                    decoration: InputDecoration(
-                      hintText: 'Pesquisar filmes...',
-                      prefixIcon: const Icon(Icons.search),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(4),
-                        borderSide: const BorderSide(),
+                    style: const TextStyle(color: Colors.white),
+                    decoration: const InputDecoration(
+                      hintText: 'Pesquise por um filme',
+                      hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+                      suffixIcon: Icon(Icons.search, color: Colors.white),
+                      fillColor: CustomTheme.blackSecondary,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
                       ),
                     ),
                     onChanged: (value) {
@@ -90,12 +94,19 @@ class _MoviesPageState extends State<MoviesPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  color: CustomTheme.black,
-                                  child: const Center(
-                                    child: Text(
-                                      'Voltar',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                  color: CustomTheme.blackSecondary,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.arrow_circle_left_rounded, size: 30),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          'Página ${_listPage - 1}',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -108,6 +119,7 @@ class _MoviesPageState extends State<MoviesPage> {
                           final movieIndex = index - (showBackButton ? 1 : 0);
                           if (movieIndex < itemCount) {
                             final movie = _filteredMovies[movieIndex];
+
                             return GestureDetector(
                               onTap: () {
                                 Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
@@ -122,9 +134,26 @@ class _MoviesPageState extends State<MoviesPage> {
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        child: Image.network(
-                                          moviesProvider.getImageUrl(movie.posterPath),
-                                          fit: BoxFit.cover,
+                                        child: Skeletonizer(
+                                          enabled: moviesProvider.isLoading,
+                                          child: Image.network(
+                                            moviesProvider.getImageUrl(movie.posterPath),
+                                            fit: BoxFit.cover,
+                                            loadingBuilder: (BuildContext context, Widget child, ImageChunkEvent? loadingProgress) {
+                                              if (loadingProgress == null) {
+                                                return child;
+                                              } else {
+                                                return Skeletonizer(
+                                                  enabled: true,
+                                                  child: Container(
+                                                    color: Colors.grey[300],
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                  ),
+                                                );
+                                              }
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -147,12 +176,19 @@ class _MoviesPageState extends State<MoviesPage> {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(6),
                                 child: Container(
-                                  color: CustomTheme.black,
-                                  child: const Center(
-                                    child: Text(
-                                      'Próxima página',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                                  color: CustomTheme.blackSecondary,
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        const Icon(Icons.arrow_circle_right_rounded, size: 30),
+                                        const SizedBox(height: 10),
+                                        Text(
+                                          'Página ${_listPage + 1}',
+                                          textAlign: TextAlign.center,
+                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
