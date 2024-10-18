@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../imports/providers.dart';
 import '../imports/utils.dart';
@@ -47,20 +48,29 @@ class MovieDetailsPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
                             Expanded(
-                              child: Card(
-                                color: CustomTheme.red,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 14),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.play_arrow, size: 20),
-                                      SizedBox(width: 5),
-                                      Text('Assistir trailer', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-                                    ],
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final trailerKey = await context.read<MoviesProvider>().fetchYoutubeTrailer(movie.id);
+                                  if (trailerKey != null) {
+                                    final trailerUrl = Uri.parse('https://www.youtube.com/watch?v=$trailerKey');
+                                    await launchUrl(trailerUrl);
+                                  }
+                                },
+                                child: Card(
+                                  color: CustomTheme.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(vertical: 14),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(Icons.play_arrow, size: 20),
+                                        SizedBox(width: 5),
+                                        Text('Assistir trailer', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

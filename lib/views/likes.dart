@@ -30,24 +30,31 @@ class LikesPage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final movie = favoriteMovies[index];
                   return Consumer<MoviesProvider>(
-                    builder: (context, moviesProvider, child) => ListTile(
-                      contentPadding: const EdgeInsets.all(10),
-                      leading: SizedBox(
-                        width: 50,
-                        height: 200,
-                        child: Image.network(
-                          moviesProvider.getImageUrl(movie.posterPath),
-                          fit: BoxFit.cover,
+                    builder: (context, moviesProvider, child) => Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(10),
+                        leading: AspectRatio(
+                          aspectRatio: 2 / 3, // Define uma proporção de imagem típica de pôsteres
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(2),
+                            child: Image.network(
+                              moviesProvider.getImageUrl(movie.posterPath),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
                         ),
+                        title: Text(movie.title),
+                        onTap: () {
+                          Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const MovieDetailsPage(),
+                            ),
+                          );
+                        },
                       ),
-                      title: Text(movie.title),
-                      onTap: () {
-                        Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const MovieDetailsPage()),
-                        );
-                      },
                     ),
                   );
                 },

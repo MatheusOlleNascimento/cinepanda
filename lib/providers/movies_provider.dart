@@ -14,6 +14,8 @@ class MoviesProvider extends ChangeNotifier {
   List<Movie> get movies => _movies;
   bool get isLoading => _isLoading;
 
+  //TODO Renomear para api provider
+
   Future<void> fetchMovies(int page) async {
     _isLoading = true;
     notifyListeners();
@@ -48,6 +50,19 @@ class MoviesProvider extends ChangeNotifier {
       _isLoading = false;
     }
   }
+
+  Future<String?> fetchYoutubeTrailer(int id) async {
+    _isLoading = true;
+    try {
+      return await apiService.fetchYoutubeTrailer(id);
+    } catch (e) {
+      throw Exception('Failed: Error $e');
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+  //TODO Criar um database provider
 
   Future<void> addFavorite(Movie movie) async {
     final dbHelper = DatabaseHelper();

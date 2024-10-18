@@ -1,3 +1,4 @@
+import 'package:cine_panda/models/youtube_trailer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -70,6 +71,25 @@ class ApiService {
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
       return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
+    } else {
+      throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
+    }
+  }
+
+  Future<String?> fetchYoutubeTrailer(int id) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/movie/$id/videos?language=pt-BR'),
+      headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> trailersJson = jsonDecode(response.body)['results'];
+      if (trailersJson.isEmpty) {
+        return null;
+      }
+
+      final List<String?> trailers = extractYoutubeTrailers(trailersJson);
+      return trailers.last;
     } else {
       throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
     }
