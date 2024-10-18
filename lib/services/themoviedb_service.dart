@@ -8,9 +8,11 @@ class ThemoviedbService {
   final String apiUrl = dotenv.env['API_URL'] ?? 'URL não definida';
   final String apiKey = dotenv.env['API_KEY'] ?? 'Chave não definida';
 
+  //TODO Criar função de get já com todos os parametros e headers necessários
+
   Future<List<Movie>> searchMovies(String query, int page) async {
     final response = await http.get(
-      Uri.parse('https://api.themoviedb.org/3/search/movie?query=$query&include_adult=false&language=pt-BR&page=$page'),
+      Uri.parse('$apiUrl/search/movie?query=$query&include_adult=false&language=pt-BR&page=$page'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {

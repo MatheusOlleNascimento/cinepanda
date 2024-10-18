@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../imports/components.dart';
 import '../imports/styles.dart';
 import '../imports/providers.dart';
 import '../imports/views.dart';
@@ -85,24 +86,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
                     onChanged: _onSearchChanged,
                   ),
                   const SizedBox(height: 10),
-                  if (moviesProvider.movies.isEmpty && !moviesProvider.isLoading)
-                    Padding(
-                      padding: const EdgeInsets.all(20),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const Text(
-                            'Nenhum filme encontrado',
-                            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: _clearSearch,
-                            child: const Text('Limpar busca'),
-                          ),
-                        ],
-                      ),
-                    ),
+                  if (moviesProvider.movies.isEmpty && !moviesProvider.isLoading) NotFoundComponent(onClearSearch: _clearSearch),
                   if (moviesProvider.movies.isNotEmpty)
                     Expanded(
                       child: GridView.builder(

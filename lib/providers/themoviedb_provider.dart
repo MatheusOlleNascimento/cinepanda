@@ -16,6 +16,9 @@ class TheMovieDBProvider extends ChangeNotifier {
   bool get isLoading => _isLoading;
 
   Future<void> searchMovies(String query, int page) async {
+    if (query.isEmpty) {
+      return fetchMovies(page);
+    }
     _isLoading = true;
     notifyListeners();
     try {

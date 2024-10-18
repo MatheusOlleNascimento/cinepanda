@@ -35,68 +35,71 @@ class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
   Widget build(BuildContext context) {
     final randomVariation = (variations.toList()..shuffle()).first;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Column(
-            children: [
-              SvgPicture.asset(
-                randomVariation['image']!,
-                semanticsLabel: 'CinePanda',
-                height: 240,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                child: Text(
-                  randomVariation['text']!,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: GestureDetector(
-                  onTap: () {
-                    var trendingMovies = Provider.of<TheMovieDBProvider>(context, listen: false).trendingMovies;
-
-                    if (trendingMovies.isNotEmpty) {
-                      var randomIndex = Random().nextInt(trendingMovies.length);
-                      var randomTrendingMovie = trendingMovies[randomIndex];
-
-                      Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
-
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
-                      );
-                    }
-                  },
-                  child: Card(
-                    color: CustomTheme.red,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+    return Consumer<ConnectivityProvider>(
+      builder: (context, connectivity, child) {
+        if (!connectivity.isOnline) {
+          return const Center(child: OfflineScreen());
+        }
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  SvgPicture.asset(randomVariation['image']!, semanticsLabel: 'CinePanda', height: 240),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 20),
+                    child: Text(
+                      randomVariation['text']!,
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w400, color: Colors.white),
+                      textAlign: TextAlign.center,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            randomVariation['button']!,
-                            style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 30),
+                    child: GestureDetector(
+                      onTap: () {
+                        var trendingMovies = Provider.of<TheMovieDBProvider>(context, listen: false).trendingMovies;
+
+                        if (trendingMovies.isNotEmpty) {
+                          var randomIndex = Random().nextInt(trendingMovies.length);
+                          var randomTrendingMovie = trendingMovies[randomIndex];
+
+                          Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
+
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
+                          );
+                        }
+                      },
+                      child: Card(
+                        color: CustomTheme.red,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                randomVariation['button']!,
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
-          ),
-        ),
-      ],
+            ),
+          ],
+        );
+      },
     );
   }
 }
