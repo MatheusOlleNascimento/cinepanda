@@ -33,12 +33,15 @@ class MovieDetailsPage extends StatelessWidget {
                 if (!connectivity.isOnline) {
                   return const Center(child: OfflinePage());
                 }
+
+                final existsTrailer = movie!.trailerKey != null;
+
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 20),
                   child: ListView(
                     children: <Widget>[
                       Image.network(
-                        context.watch<MoviesProvider>().getImageUrl(movie!.posterPath),
+                        context.watch<MoviesProvider>().getImageUrl(movie.posterPath),
                         height: 500,
                         fit: BoxFit.cover,
                       ),
@@ -50,25 +53,26 @@ class MovieDetailsPage extends StatelessWidget {
                             Expanded(
                               child: GestureDetector(
                                 onTap: () async {
-                                  final trailerKey = await context.read<MoviesProvider>().fetchYoutubeTrailer(movie.id);
-                                  if (trailerKey != null) {
-                                    final trailerUrl = Uri.parse('https://www.youtube.com/watch?v=$trailerKey');
-                                    await launchUrl(trailerUrl);
+                                  if (existsTrailer) {
+                                    await launchUrl(Uri.parse('https://www.youtube.com/watch?v=${movie.trailerKey}'));
                                   }
                                 },
                                 child: Card(
-                                  color: CustomTheme.red,
+                                  color: existsTrailer ? CustomTheme.red : CustomTheme.grey,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(4),
                                   ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.symmetric(vertical: 14),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(vertical: 14),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        Icon(Icons.play_arrow, size: 20),
-                                        SizedBox(width: 5),
-                                        Text('Assistir trailer', style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                                        Icon(existsTrailer ? Icons.play_arrow : Icons.videocam_off_rounded, size: 20, color: Colors.white),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          existsTrailer ? 'Assistir trailer' : 'Trailer indisponível',
+                                          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
+                                        ),
                                       ],
                                     ),
                                   ),

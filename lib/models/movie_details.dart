@@ -6,6 +6,7 @@ class MovieDetails extends Movie {
   final double voteAverage;
   final String releaseDate;
   final int runtime;
+  final String? trailerKey;
 
   MovieDetails({
     required super.id,
@@ -16,6 +17,7 @@ class MovieDetails extends Movie {
     required this.genreNames,
     required this.releaseDate,
     required this.runtime,
+    this.trailerKey,
   });
 
   factory MovieDetails.fromJson(Map<String, dynamic> json) {

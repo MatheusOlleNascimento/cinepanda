@@ -35,7 +35,20 @@ class MoviesProvider extends ChangeNotifier {
   Future<MovieDetails> fetchMovieDetails(int id) async {
     _isLoading = true;
     try {
-      return await apiService.fetchMovieDetails(id);
+      var movieDetails = await apiService.fetchMovieDetails(id);
+      var trailerKey = await apiService.fetchYoutubeTrailer(id);
+
+      return MovieDetails(
+        id: movieDetails.id,
+        title: movieDetails.title,
+        posterPath: movieDetails.posterPath,
+        overview: movieDetails.overview,
+        voteAverage: movieDetails.voteAverage,
+        genreNames: movieDetails.genreNames,
+        releaseDate: movieDetails.releaseDate,
+        runtime: movieDetails.runtime,
+        trailerKey: trailerKey,
+      );
     } catch (e) {
       throw Exception('Failed: Error $e');
     } finally {
@@ -47,17 +60,6 @@ class MoviesProvider extends ChangeNotifier {
     _isLoading = true;
     try {
       return await apiService.fetchWatchProviders(id);
-    } catch (e) {
-      throw Exception('Failed: Error $e');
-    } finally {
-      _isLoading = false;
-    }
-  }
-
-  Future<String?> fetchYoutubeTrailer(int id) async {
-    _isLoading = true;
-    try {
-      return await apiService.fetchYoutubeTrailer(id);
     } catch (e) {
       throw Exception('Failed: Error $e');
     } finally {
