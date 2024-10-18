@@ -8,6 +8,19 @@ class ThemoviedbService {
   final String apiUrl = dotenv.env['API_URL'] ?? 'URL não definida';
   final String apiKey = dotenv.env['API_KEY'] ?? 'Chave não definida';
 
+  Future<List<Movie>> searchMovies(String query, int page) async {
+    final response = await http.get(
+      Uri.parse('https://api.themoviedb.org/3/search/movie?query=$query&include_adult=false&language=pt-BR&page=$page'),
+      headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
+    );
+    if (response.statusCode == 200) {
+      final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
+      return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
+    } else {
+      throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
+    }
+  }
+
   Future<List<Movie>> fetchPopularMovies(int page) async {
     final response = await http.get(
       Uri.parse('$apiUrl/movie/popular?language=pt-BR&page=$page'),
@@ -57,19 +70,6 @@ class ThemoviedbService {
       } else {
         return [];
       }
-    } else {
-      throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
-    }
-  }
-
-  Future<List<Movie>> searchMovies(String query) async {
-    final response = await http.get(
-      Uri.parse('$apiUrl/search/movie?language=pt-BR?query=$query'),
-      headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
-    );
-    if (response.statusCode == 200) {
-      final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
-      return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
     } else {
       throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
     }

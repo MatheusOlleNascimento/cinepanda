@@ -15,14 +15,16 @@ class TheMovieDBProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  Future<List<Movie>> searchMovies(String query) async {
+  Future<void> searchMovies(String query, int page) async {
     _isLoading = true;
+    notifyListeners();
     try {
-      return await apiService.searchMovies(query);
+      _movies = await apiService.searchMovies(query, page);
     } catch (e) {
       throw Exception('Failed: Error $e');
     } finally {
       _isLoading = false;
+      notifyListeners();
     }
   }
 
