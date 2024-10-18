@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 import 'imports/providers.dart';
 import 'imports/utils.dart';
 import 'imports/views.dart';
-import 'imports/widgets.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,34 +29,8 @@ class App extends StatelessWidget {
       child: MaterialApp(
         title: 'CinePanda',
         theme: CustomTheme.darkTheme,
-        home: const MainPage(),
+        home: const SplashScreen(),
       ),
-    );
-  }
-}
-
-class MainPage extends StatefulWidget {
-  const MainPage({super.key});
-
-  @override
-  State<MainPage> createState() => _MainPageState();
-}
-
-class _MainPageState extends State<MainPage> {
-  static const List<Widget> _tabPagesIndex = <Widget>[
-    LikesPage(),
-    MoviesPage(),
-    DiscoverPage(),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    final currentIndex = context.watch<WidgetsProvider>().currentIndex;
-
-    return Scaffold(
-      appBar: const LogoAppbar(),
-      body: Center(child: _tabPagesIndex.elementAt(currentIndex)),
-      bottomNavigationBar: const BottomNavbar(),
     );
   }
 }

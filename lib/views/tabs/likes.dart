@@ -2,10 +2,10 @@ import 'package:cine_panda/database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../imports/models.dart';
-import '../imports/providers.dart';
-import '../imports/utils.dart';
-import '../imports/views.dart';
+import '../../imports/models.dart';
+import '../../imports/providers.dart';
+import '../../imports/utils.dart';
+import '../../imports/views.dart';
 
 class LikesPage extends StatefulWidget {
   const LikesPage({super.key});
