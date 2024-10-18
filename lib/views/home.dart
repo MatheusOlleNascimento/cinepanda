@@ -16,7 +16,7 @@ class _HomePageState extends State<HomePage> {
   static final List<Widget> _tabPagesIndex = <Widget>[
     const LikesPage(),
     const MoviesPage(),
-    DiscoverPage(),
+    const DiscoverPage(),
   ];
 
   @override

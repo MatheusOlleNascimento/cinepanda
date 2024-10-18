@@ -7,11 +7,14 @@ import '../imports/services.dart';
 class MoviesProvider extends ChangeNotifier {
   ApiService apiService = ApiService();
   List<Movie> _movies = [];
+  List<Movie> _trendingMovies = [];
   final List<int> _favoriteIds = [];
 
   bool _isLoading = false;
 
   List<Movie> get movies => _movies;
+  List<Movie> get trendingMovies => _trendingMovies;
+
   bool get isLoading => _isLoading;
 
   //TODO Renomear para api provider
@@ -73,10 +76,10 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
-  Future<List<Movie>> fetchTrendingMovies() async {
+  Future<void> fetchTrendingMovies(int page) async {
     _isLoading = true;
     try {
-      return await apiService.fetchTrendingMovies(1);
+      _trendingMovies = await apiService.fetchTrendingMovies(page);
     } catch (e) {
       throw Exception('Failed: Error $e');
     } finally {

@@ -1,10 +1,28 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
-import '../../imports/utils.dart';
+import '../imports/providers.dart';
+import '../imports/utils.dart';
+import '../imports/views.dart';
 
-class DiscoverPage extends StatelessWidget {
-  DiscoverPage({super.key});
+class DiscoverPage extends StatefulWidget {
+  const DiscoverPage({super.key});
+
+  @override
+  State<DiscoverPage> createState() => _DiscoverPageState();
+}
+
+class _DiscoverPageState extends State<DiscoverPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<MoviesProvider>(context, listen: false).fetchTrendingMovies(Random().nextInt(4) + 1);
+    });
+  }
 
   final List<Map<String, String>> variations = [
     {'image': 'assets/hero.svg', 'text': 'Está sem ideia? Deixe comigo!', 'button': '⚔️ Pesquisar'},
@@ -40,7 +58,21 @@ class DiscoverPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    var trendingMovies = Provider.of<MoviesProvider>(context, listen: false).trendingMovies;
+
+                    if (trendingMovies.isNotEmpty) {
+                      var randomIndex = Random().nextInt(trendingMovies.length);
+                      var randomTrendingMovie = trendingMovies[randomIndex];
+
+                      Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MovieDetailsPage()),
+                      );
+                    }
+                  },
                   child: Card(
                     color: CustomTheme.red,
                     shape: RoundedRectangleBorder(

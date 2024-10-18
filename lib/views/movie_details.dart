@@ -3,10 +3,10 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../../../imports/providers.dart';
-import '../../../imports/utils.dart';
-import '../../../imports/views.dart';
-import '../../../imports/widgets.dart';
+import '../imports/providers.dart';
+import '../imports/utils.dart';
+import '../imports/views.dart';
+import '../imports/widgets.dart';
 
 class MovieDetailsPage extends StatelessWidget {
   const MovieDetailsPage({super.key});

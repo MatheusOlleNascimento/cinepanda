@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-import '../../../imports/models.dart';
-import '../../../imports/providers.dart';
-import '../../../imports/views.dart';
+import '../imports/models.dart';
+import '../imports/providers.dart';
+import '../imports/views.dart';
 
 class MoviesPage extends StatefulWidget {
   const MoviesPage({super.key});
