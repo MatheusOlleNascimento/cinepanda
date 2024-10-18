@@ -1,4 +1,3 @@
-import 'package:cine_panda/models/youtube_trailer.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -78,7 +77,7 @@ class ApiService {
 
   Future<List<Movie>> fetchDiscoverMovies(int page) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/discover/movie/day?language=pt-BR&page=$page'),
+      Uri.parse('$apiUrl/discover/movie?include_adult=false&language=pt-BR&page=$page&sort_by=popularity.desc'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
 

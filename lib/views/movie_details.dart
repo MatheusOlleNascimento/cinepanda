@@ -136,13 +136,7 @@ class MovieDetailsPage extends StatelessWidget {
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
-                            const SizedBox(width: 10),
-                            const Icon(Icons.star, size: 20, color: Colors.yellow),
-                            const SizedBox(width: 5),
-                            Text(
-                              movie.voteAverage.toStringAsFixed(1),
-                              style: const TextStyle(fontSize: 18, color: Colors.grey),
-                            ),
+                            Avaliation(voteAverage: movie.voteAverage),
                           ],
                         ),
                       ),
@@ -251,5 +245,28 @@ class MovieDetailsPage extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class Avaliation extends StatelessWidget {
+  final double voteAverage;
+
+  const Avaliation({super.key, required this.voteAverage});
+
+  @override
+  Widget build(BuildContext context) {
+    return voteAverage > 0
+        ? Row(
+            children: [
+              const SizedBox(width: 10),
+              const Icon(Icons.star, size: 20, color: Colors.yellow),
+              const SizedBox(width: 5),
+              Text(
+                voteAverage.toStringAsFixed(1),
+                style: const TextStyle(fontSize: 18, color: Colors.grey),
+              ),
+            ],
+          )
+        : const SizedBox.shrink();
   }
 }

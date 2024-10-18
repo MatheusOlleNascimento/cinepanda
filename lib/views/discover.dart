@@ -20,7 +20,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MoviesProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(20) + 1);
+      Provider.of<MoviesProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(30));
     });
   }
 
