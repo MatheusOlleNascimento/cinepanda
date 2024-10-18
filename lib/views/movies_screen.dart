@@ -1,20 +1,20 @@
-import 'package:cine_panda/imports/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+import '../imports/styles.dart';
 import '../imports/models.dart';
 import '../imports/providers.dart';
 import '../imports/views.dart';
 
-class MoviesPage extends StatefulWidget {
-  const MoviesPage({super.key});
+class MoviesScreen extends StatefulWidget {
+  const MoviesScreen({super.key});
 
   @override
-  State<MoviesPage> createState() => _MoviesPageState();
+  State<MoviesScreen> createState() => _MoviesScreenState();
 }
 
-class _MoviesPageState extends State<MoviesPage> {
+class _MoviesScreenState extends State<MoviesScreen> {
   int _listPage = 1;
   final TextEditingController _searchController = TextEditingController();
   List<Movie> _filteredMovies = [];
@@ -23,8 +23,14 @@ class _MoviesPageState extends State<MoviesPage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MoviesProvider>(context, listen: false).fetchMovies(_listPage);
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
     });
+  }
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
   }
 
   @override
@@ -32,10 +38,10 @@ class _MoviesPageState extends State<MoviesPage> {
     return Consumer<ConnectivityProvider>(
       builder: (context, connectivity, child) {
         if (!connectivity.isOnline) {
-          return const OfflinePage();
+          return const OfflineScreen();
         }
 
-        return Consumer<MoviesProvider>(
+        return Consumer<TheMovieDBProvider>(
           builder: (context, moviesProvider, child) {
             if (moviesProvider.movies.isEmpty) {
               return const Center(child: Text('Nenhum filme encontrado'));
@@ -88,7 +94,7 @@ class _MoviesPageState extends State<MoviesPage> {
                               setState(() {
                                 _listPage--;
                               });
-                              Provider.of<MoviesProvider>(context, listen: false).fetchMovies(_listPage);
+                              Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
                             },
                             child: GridTile(
                               child: ClipRRect(
@@ -122,10 +128,10 @@ class _MoviesPageState extends State<MoviesPage> {
 
                             return GestureDetector(
                               onTap: () {
-                                Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
+                                Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const MovieDetailsPage()),
+                                  MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
                                 );
                               },
                               child: GridTile(
@@ -170,7 +176,7 @@ class _MoviesPageState extends State<MoviesPage> {
                               setState(() {
                                 _listPage++;
                               });
-                              Provider.of<MoviesProvider>(context, listen: false).fetchMovies(_listPage);
+                              Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
                             },
                             child: GridTile(
                               child: ClipRRect(
@@ -208,11 +214,5 @@ class _MoviesPageState extends State<MoviesPage> {
         );
       },
     );
-  }
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    super.dispose();
   }
 }

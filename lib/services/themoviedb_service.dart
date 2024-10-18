@@ -4,7 +4,7 @@ import 'dart:convert';
 
 import '../imports/models.dart';
 
-class ApiService {
+class ThemoviedbService {
   final String apiUrl = dotenv.env['API_URL'] ?? 'URL não definida';
   final String apiKey = dotenv.env['API_KEY'] ?? 'Chave não definida';
 

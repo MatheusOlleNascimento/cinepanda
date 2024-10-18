@@ -5,22 +5,22 @@ import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../imports/providers.dart';
-import '../imports/utils.dart';
+import '../imports/styles.dart';
 import '../imports/views.dart';
 
-class DiscoverPage extends StatefulWidget {
-  const DiscoverPage({super.key});
+class DiscoverMoviesScreen extends StatefulWidget {
+  const DiscoverMoviesScreen({super.key});
 
   @override
-  State<DiscoverPage> createState() => _DiscoverPageState();
+  State<DiscoverMoviesScreen> createState() => _DiscoverMoviesScreenState();
 }
 
-class _DiscoverPageState extends State<DiscoverPage> {
+class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<MoviesProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(30));
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(30));
     });
   }
 
@@ -59,17 +59,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: GestureDetector(
                   onTap: () {
-                    var trendingMovies = Provider.of<MoviesProvider>(context, listen: false).trendingMovies;
+                    var trendingMovies = Provider.of<TheMovieDBProvider>(context, listen: false).trendingMovies;
 
                     if (trendingMovies.isNotEmpty) {
                       var randomIndex = Random().nextInt(trendingMovies.length);
                       var randomTrendingMovie = trendingMovies[randomIndex];
 
-                      Provider.of<WidgetsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
+                      Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
 
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MovieDetailsPage()),
+                        MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
                       );
                     }
                   },

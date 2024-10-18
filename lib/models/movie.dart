@@ -13,7 +13,6 @@ class Movie {
     );
   }
 
-  //TODO Isolar funcionalidades somente de banco de dados
   Map<String, dynamic> toMap() {
     return {
       'id': id,

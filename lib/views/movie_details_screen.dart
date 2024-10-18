@@ -5,20 +5,21 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../imports/providers.dart';
 import '../imports/utils.dart';
+import '../imports/styles.dart';
 import '../imports/views.dart';
-import '../imports/widgets.dart';
+import '../imports/components.dart';
 
-class MovieDetailsPage extends StatelessWidget {
-  const MovieDetailsPage({super.key});
+class MovieDetailsScreen extends StatelessWidget {
+  const MovieDetailsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final movieId = context.watch<WidgetsProvider>().selectedMovieId;
+    final movieId = context.watch<ComponentsProvider>().selectedMovieId;
 
     return Scaffold(
       appBar: const LogoAppbar(),
       body: FutureBuilder(
-        future: context.watch<MoviesProvider>().fetchMovieDetails(movieId),
+        future: context.watch<TheMovieDBProvider>().fetchMovieDetails(movieId),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -31,7 +32,7 @@ class MovieDetailsPage extends StatelessWidget {
             return Consumer<ConnectivityProvider>(
               builder: (context, connectivity, child) {
                 if (!connectivity.isOnline) {
-                  return const Center(child: OfflinePage());
+                  return const Center(child: OfflineScreen());
                 }
 
                 final existsTrailer = movie!.trailerKey != null;
@@ -41,7 +42,7 @@ class MovieDetailsPage extends StatelessWidget {
                   child: ListView(
                     children: <Widget>[
                       Image.network(
-                        context.watch<MoviesProvider>().getImageUrl(movie.posterPath),
+                        context.watch<TheMovieDBProvider>().getImageUrl(movie.posterPath),
                         height: 500,
                         fit: BoxFit.cover,
                       ),
@@ -80,7 +81,7 @@ class MovieDetailsPage extends StatelessWidget {
                               ),
                             ),
                             Expanded(
-                              child: Consumer<MoviesProvider>(
+                              child: Consumer<DatabaseProvider>(
                                 builder: (context, moviesProvider, child) {
                                   final isFavorite = moviesProvider.isFavorite(movie.id);
 
@@ -191,7 +192,7 @@ class MovieDetailsPage extends StatelessWidget {
                         child: Text(movie.overview, style: const TextStyle(fontSize: 16)),
                       ),
                       FutureBuilder(
-                        future: context.watch<MoviesProvider>().fetchWatchProviders(movie.id),
+                        future: context.watch<TheMovieDBProvider>().fetchWatchProviders(movie.id),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState == ConnectionState.waiting) {
                             return const Center(child: CircularProgressIndicator());
@@ -224,7 +225,7 @@ class MovieDetailsPage extends StatelessWidget {
                                       return ClipRRect(
                                         borderRadius: BorderRadius.circular(5),
                                         child: Image.network(
-                                          context.watch<MoviesProvider>().getProviderLogoUrl(provider.logoPath),
+                                          context.watch<TheMovieDBProvider>().getProviderLogoUrl(provider.logoPath),
                                           width: 60,
                                         ),
                                       );

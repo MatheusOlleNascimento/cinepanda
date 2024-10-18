@@ -3,25 +3,25 @@ import 'package:provider/provider.dart';
 
 import '../imports/providers.dart';
 import '../imports/views.dart';
-import '../imports/widgets.dart';
+import '../imports/components.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   static final List<Widget> _tabPagesIndex = <Widget>[
-    const LikesPage(),
-    const MoviesPage(),
-    const DiscoverPage(),
+    const FavoritesScreen(),
+    const MoviesScreen(),
+    const DiscoverMoviesScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = context.watch<WidgetsProvider>().currentIndex;
+    final currentIndex = context.watch<ComponentsProvider>().currentIndex;
 
     return Scaffold(
       appBar: const LogoAppbar(),

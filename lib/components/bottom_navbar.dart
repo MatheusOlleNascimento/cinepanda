@@ -1,4 +1,4 @@
-import 'package:cine_panda/utils/theme.dart';
+import 'package:cine_panda/styles/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
@@ -37,9 +37,9 @@ class BottomNavbarState extends State<BottomNavbar> {
               GButton(icon: LineIcons.home, text: 'Início', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
               GButton(icon: LineIcons.random, text: 'Mê surpreenda', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
             ],
-            selectedIndex: Provider.of<WidgetsProvider>(context).currentIndex,
+            selectedIndex: Provider.of<ComponentsProvider>(context).currentIndex,
             onTabChange: (index) {
-              Provider.of<WidgetsProvider>(context, listen: false).changeIndex(index);
+              Provider.of<ComponentsProvider>(context, listen: false).changeIndex(index);
             },
           ),
         ),

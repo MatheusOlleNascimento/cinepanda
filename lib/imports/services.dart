@@ -1,1 +1,1 @@
-export 'package:cine_panda/services/api_service.dart';
+export 'package:cine_panda/services/themoviedb_service.dart';

@@ -1,10 +1,10 @@
-import 'package:cine_panda/database/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 
+import 'imports/database.dart';
 import 'imports/providers.dart';
-import 'imports/utils.dart';
+import 'imports/styles.dart';
 import 'imports/views.dart';
 
 void main() async {
@@ -22,8 +22,9 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => MoviesProvider()),
-        ChangeNotifierProvider(create: (_) => WidgetsProvider()),
+        ChangeNotifierProvider(create: (_) => TheMovieDBProvider()),
+        ChangeNotifierProvider(create: (_) => DatabaseProvider()),
+        ChangeNotifierProvider(create: (_) => ComponentsProvider()),
         ChangeNotifierProvider(create: (_) => ConnectivityProvider()),
       ],
       child: MaterialApp(
