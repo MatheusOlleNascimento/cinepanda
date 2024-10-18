@@ -78,10 +78,10 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchTrendingMovies(int page) async {
+  Future<void> fetchDiscoverMovies(int page) async {
     _isLoading = true;
     try {
-      _trendingMovies = await apiService.fetchTrendingMovies(page);
+      _trendingMovies = await apiService.fetchDiscoverMovies(page);
     } catch (e) {
       throw Exception('Failed: Error $e');
     } finally {

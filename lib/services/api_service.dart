@@ -76,9 +76,9 @@ class ApiService {
     }
   }
 
-  Future<List<Movie>> fetchTrendingMovies(int page) async {
+  Future<List<Movie>> fetchDiscoverMovies(int page) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/trending/movie/day?language=pt-BR&page=$page'),
+      Uri.parse('$apiUrl/discover/movie/day?language=pt-BR&page=$page'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
 
