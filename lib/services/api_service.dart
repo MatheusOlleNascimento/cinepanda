@@ -76,6 +76,20 @@ class ApiService {
     }
   }
 
+  Future<List<Movie>> fetchTrendingMovies(int page) async {
+    final response = await http.get(
+      Uri.parse('$apiUrl/trending/movie/day?language=pt-BR&page=$page'),
+      headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
+      return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
+    } else {
+      throw Exception('Failed: Error ${response.statusCode}: ${response.body}');
+    }
+  }
+
   Future<String?> fetchYoutubeTrailer(int id) async {
     final response = await http.get(
       Uri.parse('$apiUrl/movie/$id/videos?language=pt-BR'),

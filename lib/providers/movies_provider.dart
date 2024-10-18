@@ -62,6 +62,28 @@ class MoviesProvider extends ChangeNotifier {
     }
   }
 
+  Future<List<Movie>> searchMovies(String query) async {
+    _isLoading = true;
+    try {
+      return await apiService.searchMovies(query);
+    } catch (e) {
+      throw Exception('Failed: Error $e');
+    } finally {
+      _isLoading = false;
+    }
+  }
+
+  Future<List<Movie>> fetchTrendingMovies() async {
+    _isLoading = true;
+    try {
+      return await apiService.fetchTrendingMovies(1);
+    } catch (e) {
+      throw Exception('Failed: Error $e');
+    } finally {
+      _isLoading = false;
+    }
+  }
+
   //TODO Criar um database provider
 
   Future<void> addFavorite(Movie movie) async {
