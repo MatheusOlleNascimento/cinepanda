@@ -13,9 +13,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const List<Widget> _tabPagesIndex = <Widget>[
-    LikesPage(),
-    MoviesPage(),
+  static final List<Widget> _tabPagesIndex = <Widget>[
+    const LikesPage(),
+    const MoviesPage(),
     DiscoverPage(),
   ];
 

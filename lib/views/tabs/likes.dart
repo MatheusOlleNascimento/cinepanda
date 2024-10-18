@@ -1,5 +1,6 @@
 import 'package:cine_panda/database/database_helper.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 import '../../imports/models.dart';
@@ -55,10 +56,20 @@ class _LikesPageState extends State<LikesPage> {
                   } else if (snapshot.hasError) {
                     return const Center(child: Text('Erro ao carregar favoritos'));
                   } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const Center(child: Text('Nenhum favorito encontrado'));
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset('assets/sleeping.svg', semanticsLabel: 'Ops...', width: 240),
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 24),
+                            child: Text('Parece que você ainda não adicionou nenhum filme como favorito', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400), textAlign: TextAlign.center),
+                          ),
+                        ],
+                      ),
+                    );
                   } else {
                     final favoriteMovies = snapshot.data!.where((movie) => movie.title.toLowerCase().contains(searchQuery)).toList(); // Filtra a lista de filmes com base na pesquisa
-
                     return ListView.builder(
                       itemCount: favoriteMovies.length,
                       itemBuilder: (context, index) {
