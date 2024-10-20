@@ -39,7 +39,7 @@ class ThemoviedbService {
 
   Future<MovieDetails> fetchMovieDetails(int id) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/movie/$id?language=pt-BR'),
+      Uri.parse('$apiUrl/movie/$id?language=pt-BR?include_adult=false'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {
@@ -51,7 +51,7 @@ class ThemoviedbService {
 
   Future<List<MovieProvider>> fetchWatchProviders(int id) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/movie/$id/watch/providers'),
+      Uri.parse('$apiUrl/movie/$id/watch/providers?include_adult=false'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
 
@@ -93,7 +93,7 @@ class ThemoviedbService {
 
   Future<String?> fetchYoutubeTrailer(int id) async {
     final response = await http.get(
-      Uri.parse('$apiUrl/movie/$id/videos?language=pt-BR'),
+      Uri.parse('$apiUrl/movie/$id/videos?include_adult=false?language=pt-BR'),
       headers: {'Authorization': 'Bearer $apiKey', 'Content-Type': 'application/json'},
     );
 

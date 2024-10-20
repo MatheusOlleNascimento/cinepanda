@@ -16,14 +16,6 @@ class DiscoverMoviesScreen extends StatefulWidget {
 }
 
 class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(30));
-    });
-  }
-
   final List<Map<String, String>> variations = [
     {'image': 'assets/hero.svg', 'text': 'Está sem ideia? Deixe comigo!', 'button': '⚔️ Pesquisar'},
     {'image': 'assets/zoombie.svg', 'text': 'Assistir filmes é melhor do que morder cérebros! Vamos lá!', 'button': '🧠 Pesquisar'},
@@ -59,19 +51,20 @@ class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: GestureDetector(
-                      onTap: () {
-                        var trendingMovies = Provider.of<TheMovieDBProvider>(context, listen: false).trendingMovies;
+                      onTap: () async {
+                        var trendingMovies = await Provider.of<TheMovieDBProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(30) + 1);
 
                         if (trendingMovies.isNotEmpty) {
                           var randomIndex = Random().nextInt(trendingMovies.length);
                           var randomTrendingMovie = trendingMovies[randomIndex];
+                          if (context.mounted) {
+                            Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
 
-                          Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
-
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
-                          );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
+                            );
+                          }
                         }
                       },
                       child: Card(

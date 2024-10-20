@@ -6,12 +6,10 @@ import '../imports/services.dart';
 class TheMovieDBProvider extends ChangeNotifier {
   ThemoviedbService apiService = ThemoviedbService();
   List<Movie> _movies = [];
-  List<Movie> _trendingMovies = [];
 
   bool _isLoading = false;
 
   List<Movie> get movies => _movies;
-  List<Movie> get trendingMovies => _trendingMovies;
 
   bool get isLoading => _isLoading;
 
@@ -79,10 +77,10 @@ class TheMovieDBProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchDiscoverMovies(int page) async {
+  Future<List<Movie>> fetchDiscoverMovies(int page) async {
     _isLoading = true;
     try {
-      _trendingMovies = await apiService.fetchDiscoverMovies(page);
+      return await apiService.fetchDiscoverMovies(page);
     } catch (e) {
       throw Exception('Failed: Error $e');
     } finally {
