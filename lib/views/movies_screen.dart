@@ -59,6 +59,8 @@ class _MoviesScreenState extends State<MoviesScreen> {
           return const OfflineScreen();
         }
 
+        bool showBackButton = _listPage > 1;
+
         return Consumer<TheMovieDBProvider>(
           builder: (context, moviesProvider, child) {
             return Padding(
@@ -98,6 +100,38 @@ class _MoviesScreenState extends State<MoviesScreen> {
                         ),
                         itemCount: moviesProvider.movies.length + 1, // incluindo botões de paginação
                         itemBuilder: (context, index) {
+                          if (showBackButton && index == 0) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _listPage--;
+                                });
+                                Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
+                              },
+                              child: GridTile(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(6),
+                                  child: Container(
+                                    color: CustomTheme.blackSecondary,
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          const Icon(Icons.arrow_circle_left_rounded, size: 30),
+                                          const SizedBox(height: 10),
+                                          Text(
+                                            'Página ${_listPage - 1}',
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
                           if (index < moviesProvider.movies.length) {
                             final movie = moviesProvider.movies[index];
                             return GestureDetector(
@@ -120,7 +154,11 @@ class _MoviesScreenState extends State<MoviesScreen> {
                                       } else {
                                         return Skeletonizer(
                                           enabled: true,
-                                          child: Container(color: Colors.grey[300]),
+                                          child: Container(
+                                            color: Colors.grey[300],
+                                            width: double.infinity,
+                                            height: double.infinity,
+                                          ),
                                         );
                                       }
                                     },
@@ -129,7 +167,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
                               ),
                             );
                           }
-                          // Exibe o botão "próxima página" no final da lista de filmes
                           return GestureDetector(
                             onTap: () {
                               setState(() {
