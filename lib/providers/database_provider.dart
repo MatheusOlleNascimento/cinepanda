@@ -18,10 +18,6 @@ class DatabaseProvider extends ChangeNotifier {
 
   Future<bool> checkFavorite(int id) async {
     final dbHelper = DatabaseHelper();
-    if (await dbHelper.isFavorite(id)) {
-      return true;
-    } else {
-      return false;
-    }
+    return await dbHelper.isFavorite(id);
   }
 }

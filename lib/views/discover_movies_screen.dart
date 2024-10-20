@@ -23,6 +23,21 @@ class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
     {'image': 'assets/doctor.svg', 'text': 'Um bom filme é o melhor remédio!', 'button': '💉 Pesquisar'},
   ];
 
+  _getMovies(BuildContext context) async {
+    var trendingMovies = await Provider.of<TheMovieDBProvider>(context, listen: false).fetchDiscoverMovies(context, Random().nextInt(30) + 1);
+
+    if (trendingMovies.isNotEmpty) {
+      var randomIndex = Random().nextInt(trendingMovies.length);
+      var randomTrendingMovie = trendingMovies[randomIndex];
+      if (context.mounted) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: randomTrendingMovie.id)),
+        );
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final randomVariation = (variations.toList()..shuffle()).first;
@@ -51,20 +66,7 @@ class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 30),
                     child: GestureDetector(
-                      onTap: () async {
-                        var trendingMovies = await Provider.of<TheMovieDBProvider>(context, listen: false).fetchDiscoverMovies(Random().nextInt(30) + 1);
-
-                        if (trendingMovies.isNotEmpty) {
-                          var randomIndex = Random().nextInt(trendingMovies.length);
-                          var randomTrendingMovie = trendingMovies[randomIndex];
-                          if (context.mounted) {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: randomTrendingMovie.id)),
-                            );
-                          }
-                        }
-                      },
+                      onTap: () => _getMovies(context),
                       child: Card(
                         color: CustomTheme.red,
                         shape: RoundedRectangleBorder(

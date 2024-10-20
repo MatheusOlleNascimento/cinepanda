@@ -33,10 +33,7 @@ class SplashScreenState extends State<SplashScreen> {
           children: [
             Lottie.asset('assets/animations/loading.json', height: 200),
             SvgPicture.asset('assets/cinepanda.svg', semanticsLabel: 'CinePanda', width: 240),
-            const Text(
-              'Pesquise e salve seus filmes favoritos',
-              style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500),
-            ),
+            const Text('Pesquise e salve seus filmes favoritos', style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
           ],
         ),
       ),

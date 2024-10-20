@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../imports/components.dart';
+import '../imports/models.dart';
 import '../imports/styles.dart';
 import '../imports/providers.dart';
 import '../imports/views.dart';
@@ -24,7 +25,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
     });
   }
 
@@ -37,18 +38,150 @@ class _MoviesScreenState extends State<MoviesScreen> {
 
   void _onSearchChanged(String query) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
-    _debounce = Timer(const Duration(seconds: 2), () {
+    _debounce = Timer(const Duration(seconds: 1), () {
       if (query.isNotEmpty) {
-        Provider.of<TheMovieDBProvider>(context, listen: false).searchMovies(query, _listPage);
+        Provider.of<TheMovieDBProvider>(context, listen: false).searchMovies(context, query, _listPage);
       } else {
-        Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
+        Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
       }
     });
   }
 
   void _clearSearch() {
     _searchController.clear();
-    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
+    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+  }
+
+  void _returnPage() {
+    setState(() {
+      _listPage--;
+    });
+    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+  }
+
+  void _nextPage() {
+    setState(() {
+      _listPage++;
+    });
+    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+  }
+
+  Widget _searchBar() {
+    return TextField(
+      controller: _searchController,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        hintText: 'Pesquise por um filme',
+        hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.search, color: Colors.white),
+          onPressed: () => _onSearchChanged,
+        ),
+        fillColor: CustomTheme.blackSecondary,
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
+        ),
+        focusedBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.black),
+        ),
+      ),
+      onChanged: _onSearchChanged,
+    );
+  }
+
+  Widget _returnButton(Function() onPressed) {
+    return GestureDetector(
+      onTap: () => _returnPage,
+      child: GridTile(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Container(
+            color: CustomTheme.blackSecondary,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.arrow_circle_left_rounded, size: 30),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Página ${_listPage - 1}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _cardMovie(Movie movie, TheMovieDBProvider moviesProvider) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: movie.id)),
+        );
+      },
+      child: GridTile(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Image.network(
+            moviesProvider.getImageUrl(movie.posterPath),
+            fit: BoxFit.cover,
+            loadingBuilder: (context, child, loadingProgress) {
+              if (loadingProgress == null) {
+                return child;
+              } else {
+                return Skeletonizer(
+                  enabled: true,
+                  child: Container(
+                    color: Colors.grey[300],
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                );
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _nextButton(Function() onPressed) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          _listPage++;
+        });
+        Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+      },
+      child: GridTile(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Container(
+            color: CustomTheme.blackSecondary,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.arrow_circle_right_rounded, size: 30),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Página ${_listPage + 1}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -67,26 +200,7 @@ class _MoviesScreenState extends State<MoviesScreen> {
               padding: const EdgeInsets.only(bottom: 10, left: 10, right: 10),
               child: Column(
                 children: [
-                  TextField(
-                    controller: _searchController,
-                    style: const TextStyle(color: Colors.white),
-                    decoration: InputDecoration(
-                      hintText: 'Pesquise por um filme',
-                      hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.search, color: Colors.white),
-                        onPressed: () => _onSearchChanged,
-                      ),
-                      fillColor: CustomTheme.blackSecondary,
-                      enabledBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                      focusedBorder: const OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.black),
-                      ),
-                    ),
-                    onChanged: _onSearchChanged,
-                  ),
+                  _searchBar(),
                   const SizedBox(height: 10),
                   if (moviesProvider.movies.isEmpty && !moviesProvider.isLoading) NotFoundComponent(onClearSearch: _clearSearch),
                   if (moviesProvider.movies.isNotEmpty)
@@ -98,104 +212,16 @@ class _MoviesScreenState extends State<MoviesScreen> {
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
                         ),
-                        itemCount: moviesProvider.movies.length + 1, // incluindo botões de paginação
+                        itemCount: moviesProvider.movies.length + 1,
                         itemBuilder: (context, index) {
                           if (showBackButton && index == 0) {
-                            return GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _listPage--;
-                                });
-                                Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
-                              },
-                              child: GridTile(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Container(
-                                    color: CustomTheme.blackSecondary,
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          const Icon(Icons.arrow_circle_left_rounded, size: 30),
-                                          const SizedBox(height: 10),
-                                          Text(
-                                            'Página ${_listPage - 1}',
-                                            textAlign: TextAlign.center,
-                                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
+                            return _returnButton(_returnPage);
                           }
                           if (index < moviesProvider.movies.length) {
                             final movie = moviesProvider.movies[index];
-                            return GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: movie.id)),
-                                );
-                              },
-                              child: GridTile(
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(6),
-                                  child: Image.network(
-                                    moviesProvider.getImageUrl(movie.posterPath),
-                                    fit: BoxFit.cover,
-                                    loadingBuilder: (context, child, loadingProgress) {
-                                      if (loadingProgress == null) {
-                                        return child;
-                                      } else {
-                                        return Skeletonizer(
-                                          enabled: true,
-                                          child: Container(
-                                            color: Colors.grey[300],
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                          ),
-                                        );
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                            );
+                            return _cardMovie(movie, moviesProvider);
                           }
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _listPage++;
-                              });
-                              Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(_listPage);
-                            },
-                            child: GridTile(
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(6),
-                                child: Container(
-                                  color: CustomTheme.blackSecondary,
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(Icons.arrow_circle_right_rounded, size: 30),
-                                        const SizedBox(height: 10),
-                                        Text(
-                                          'Página ${_listPage + 1}',
-                                          textAlign: TextAlign.center,
-                                          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
+                          return _nextButton(_nextPage);
                         },
                       ),
                     ),

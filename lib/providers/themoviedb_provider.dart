@@ -1,48 +1,47 @@
 import 'package:flutter/material.dart';
 
+import '../imports/components.dart';
 import '../imports/models.dart';
 import '../imports/services.dart';
 
 class TheMovieDBProvider extends ChangeNotifier {
   ThemoviedbService apiService = ThemoviedbService();
   List<Movie> _movies = [];
-
   bool _isLoading = false;
 
   List<Movie> get movies => _movies;
-
   bool get isLoading => _isLoading;
 
-  Future<void> searchMovies(String query, int page) async {
+  Future<void> searchMovies(BuildContext context, String query, int page) async {
     if (query.isEmpty) {
-      return fetchMovies(page);
+      return fetchMovies(context, page);
     }
     _isLoading = true;
     notifyListeners();
     try {
       _movies = await apiService.searchMovies(query, page);
     } catch (e) {
-      throw Exception('Failed: Error $e');
+      if (context.mounted) snackbar(context, e.toString());
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> fetchMovies(int page) async {
+  Future<void> fetchMovies(BuildContext context, int page) async {
     _isLoading = true;
     notifyListeners();
     try {
       _movies = await apiService.fetchPopularMovies(page);
     } catch (e) {
-      throw Exception('Failed: Error $e');
+      if (context.mounted) snackbar(context, e.toString());
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<MovieDetails> fetchMovieDetails(int id) async {
+  Future<MovieDetails> fetchMovieDetails(BuildContext context, int id) async {
     _isLoading = true;
     try {
       var movieDetails = await apiService.fetchMovieDetails(id);
@@ -60,29 +59,32 @@ class TheMovieDBProvider extends ChangeNotifier {
         trailerKey: trailerKey,
       );
     } catch (e) {
-      throw Exception('Failed: Error $e');
+      if (context.mounted) snackbar(context, e.toString());
+      rethrow;
     } finally {
       _isLoading = false;
     }
   }
 
-  Future<List<MovieProvider>> fetchWatchProviders(int id) async {
+  Future<List<MovieProvider>> fetchWatchProviders(BuildContext context, int id) async {
     _isLoading = true;
     try {
       return await apiService.fetchWatchProviders(id);
     } catch (e) {
-      throw Exception('Failed: Error $e');
+      if (context.mounted) snackbar(context, e.toString());
+      rethrow;
     } finally {
       _isLoading = false;
     }
   }
 
-  Future<List<Movie>> fetchDiscoverMovies(int page) async {
+  Future<List<Movie>> fetchDiscoverMovies(BuildContext context, int page) async {
     _isLoading = true;
     try {
       return await apiService.fetchDiscoverMovies(page);
     } catch (e) {
-      throw Exception('Failed: Error $e');
+      if (context.mounted) snackbar(context, e.toString());
+      rethrow;
     } finally {
       _isLoading = false;
     }
