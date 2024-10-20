@@ -58,11 +58,9 @@ class _DiscoverMoviesScreenState extends State<DiscoverMoviesScreen> {
                           var randomIndex = Random().nextInt(trendingMovies.length);
                           var randomTrendingMovie = trendingMovies[randomIndex];
                           if (context.mounted) {
-                            Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(randomTrendingMovie.id);
-
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
+                              MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: randomTrendingMovie.id)),
                             );
                           }
                         }

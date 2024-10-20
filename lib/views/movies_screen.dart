@@ -136,10 +136,9 @@ class _MoviesScreenState extends State<MoviesScreen> {
                             final movie = moviesProvider.movies[index];
                             return GestureDetector(
                               onTap: () {
-                                Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => const MovieDetailsScreen()),
+                                  MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: movie.id)),
                                 );
                               },
                               child: GridTile(

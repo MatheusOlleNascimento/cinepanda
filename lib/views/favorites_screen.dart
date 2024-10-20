@@ -96,12 +96,9 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                     ),
                                     title: Text(movie.title),
                                     onTap: () {
-                                      Provider.of<ComponentsProvider>(context, listen: false).changeSelectedMovieId(movie.id);
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                          builder: (context) => const MovieDetailsScreen(),
-                                        ),
+                                        MaterialPageRoute(builder: (context) => MovieDetailsScreen(movieId: movie.id)),
                                       );
                                     },
                                   ),
