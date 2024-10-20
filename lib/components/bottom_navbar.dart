@@ -35,7 +35,7 @@ class BottomNavbarState extends State<BottomNavbar> {
             tabs: const [
               GButton(icon: LineIcons.heart, text: 'Favoritos', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
               GButton(icon: LineIcons.home, text: 'Início', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
-              GButton(icon: LineIcons.random, text: 'Mê surpreenda', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
+              GButton(icon: LineIcons.random, text: 'Me surpreenda', textStyle: TextStyle(fontWeight: FontWeight.w600, fontSize: 12)),
             ],
             selectedIndex: Provider.of<ComponentsProvider>(context).currentIndex,
             onTabChange: (index) {
