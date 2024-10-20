@@ -31,6 +31,14 @@ class DatabaseProvider extends ChangeNotifier {
     }
   }
 
+  Future<List<Movie>> getFavorites() async {
+    final dbHelper = DatabaseHelper();
+    final favorites = await dbHelper.getFavorites();
+    _favoriteIds.clear();
+    _favoriteIds.addAll(favorites.map((e) => e.id));
+    return favorites;
+  }
+
   bool isFavorite(int id) {
     return _favoriteIds.contains(id);
   }

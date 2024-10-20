@@ -12,6 +12,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   final dbHelper = DatabaseHelper();
   await dbHelper.database;
+  await dbHelper.getFavorites();
   runApp(const App());
 }
 
