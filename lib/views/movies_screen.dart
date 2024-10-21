@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -19,51 +20,64 @@ class MoviesScreen extends StatefulWidget {
 class _MoviesScreenState extends State<MoviesScreen> {
   int _listPage = 1;
   final TextEditingController _searchController = TextEditingController();
+
   Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
     });
   }
 
   @override
   void dispose() {
     _searchController.dispose();
+
     _debounce?.cancel();
     super.dispose();
   }
 
-  void _onSearchChanged(String query) {
+  void _onSearchChanged(String? query) {
     if (_debounce?.isActive ?? false) _debounce?.cancel();
     _debounce = Timer(const Duration(seconds: 1), () {
-      if (query.isNotEmpty) {
-        Provider.of<TheMovieDBProvider>(context, listen: false).searchMovies(context, query, _listPage);
+      if (query != null && query.isNotEmpty) {
+        setState(() {
+          _listPage = 1;
+        });
+        Provider.of<TheMovieDBProvider>(context, listen: false).fetchPMovies(context, query, 1);
       } else {
-        Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+        Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
       }
     });
   }
 
   void _clearSearch() {
     _searchController.clear();
-    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+    Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
   }
 
   void _returnPage() {
     setState(() {
       _listPage--;
     });
-    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+    if (_searchController.text.isNotEmpty) {
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPMovies(context, _searchController.text, _listPage);
+    } else {
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
+    }
   }
 
   void _nextPage() {
     setState(() {
       _listPage++;
     });
-    Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
+    if (_searchController.text.isNotEmpty) {
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPMovies(context, _searchController.text, _listPage);
+    } else {
+      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
+    }
   }
 
   Widget _searchBar() {
@@ -86,34 +100,6 @@ class _MoviesScreenState extends State<MoviesScreen> {
         ),
       ),
       onChanged: _onSearchChanged,
-    );
-  }
-
-  Widget _returnButton(Function() onPressed) {
-    return GestureDetector(
-      onTap: () => _returnPage,
-      child: GridTile(
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: Container(
-            color: CustomTheme.blackSecondary,
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.arrow_circle_left_rounded, size: 30),
-                  const SizedBox(height: 10),
-                  Text(
-                    'Página ${_listPage - 1}',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 
@@ -151,14 +137,37 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
+  Widget _returnButton(Function() onPressed) {
+    return GestureDetector(
+      onTap: () => _returnPage,
+      child: GridTile(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Container(
+            color: CustomTheme.blackSecondary,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.arrow_circle_left_rounded, size: 30),
+                  const SizedBox(height: 10),
+                  Text(
+                    'Página ${_listPage - 1}',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _nextButton(Function() onPressed) {
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _listPage++;
-        });
-        Provider.of<TheMovieDBProvider>(context, listen: false).fetchMovies(context, _listPage);
-      },
+      onTap: () => _nextPage,
       child: GridTile(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6),
@@ -221,7 +230,10 @@ class _MoviesScreenState extends State<MoviesScreen> {
                             final movie = moviesProvider.movies[index];
                             return _cardMovie(movie, moviesProvider);
                           }
-                          return _nextButton(_nextPage);
+                          if (moviesProvider.movies.length > 19 && _searchController.text.isEmpty) {
+                            return _nextButton(_nextPage);
+                          }
+                          return null;
                         },
                       ),
                     ),

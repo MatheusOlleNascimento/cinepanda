@@ -12,29 +12,32 @@ class TheMovieDBProvider extends ChangeNotifier {
   List<Movie> get movies => _movies;
   bool get isLoading => _isLoading;
 
-  Future<void> searchMovies(BuildContext context, String query, int page) async {
+  Future<void> fetchPMovies(BuildContext context, String query, int page) async {
     if (query.isEmpty) {
-      return fetchMovies(context, page);
+      notifyListeners();
+      return;
     }
+
     _isLoading = true;
     notifyListeners();
+
     try {
-      _movies = await apiService.searchMovies(query, page);
+      _movies = await apiService.fetchPMovies(query, page);
     } catch (e) {
-      if (context.mounted) snackbar(context, e.toString());
+      Exception(e);
     } finally {
       _isLoading = false;
       notifyListeners();
     }
   }
 
-  Future<void> fetchMovies(BuildContext context, int page) async {
+  Future<void> fetchPopularMovies(BuildContext context, int page) async {
     _isLoading = true;
     notifyListeners();
     try {
       _movies = await apiService.fetchPopularMovies(page);
     } catch (e) {
-      if (context.mounted) snackbar(context, e.toString());
+      Exception(e);
     } finally {
       _isLoading = false;
       notifyListeners();

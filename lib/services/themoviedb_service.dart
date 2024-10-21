@@ -17,14 +17,15 @@ class ThemoviedbService {
     return response;
   }
 
-  Future<List<Movie>> searchMovies(String query, int page) async {
+  Future<List<Movie>> fetchPMovies(String query, int page) async {
     final response = await _httpGet('$apiUrl/search/movie?query=$query&include_adult=false&language=pt-BR&page=$page');
 
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
+      if (moviesJson.isEmpty) return [];
       return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
     } else {
-      throw Exception('Não foi possível buscar os filmes: ${response.statusCode} - ${response.body}');
+      throw Exception('Não foi possível buscar os filmes');
     }
   }
 
@@ -35,7 +36,7 @@ class ThemoviedbService {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
       return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
     } else {
-      throw Exception('Não foi possível buscar os filmes mais populares: ${response.statusCode} - ${response.body}');
+      throw Exception('Não foi possível buscar os filmes mais populares');
     }
   }
 
@@ -45,7 +46,7 @@ class ThemoviedbService {
     if (response.statusCode == 200) {
       return MovieDetails.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Não foi possível buscar os detalhes do filme: ${response.statusCode} - ${response.body}');
+      throw Exception('Não foi possível buscar os detalhes do filme');
     }
   }
 
@@ -70,7 +71,7 @@ class ThemoviedbService {
         return [];
       }
     } else {
-      throw Exception('Não foi possível buscar os provedores de streaming: ${response.statusCode} - ${response.body}');
+      throw Exception('Não foi possível buscar os provedores de streaming');
     }
   }
 
@@ -81,7 +82,7 @@ class ThemoviedbService {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
       return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
     } else {
-      throw Exception('Não foi possível buscar um filme para você: ${response.statusCode} - ${response.body}');
+      throw Exception('Não foi possível buscar um filme para você');
     }
   }
 
@@ -97,7 +98,7 @@ class ThemoviedbService {
       final List<String?> trailers = extractYoutubeTrailers(trailersJson);
       return trailers.last;
     } else {
-      throw Exception('Não foi possível buscar o trailer do filme: ${response.statusCode} - ${response.body}');
+      throw Exception('Não foi possível buscar o trailer do filme');
     }
   }
 }
