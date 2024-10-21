@@ -20,4 +20,9 @@ class ConnectivityProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // Método público para simular a conectividade para testes
+  void simulateConnectivityChange(List<ConnectivityResult> result) {
+    _checkConnectivity(result);
+  }
 }
