@@ -58,44 +58,19 @@ class _MoviesScreenState extends State<MoviesScreen> {
     Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
   }
 
-  void _returnPage() {
-    setState(() {
-      _listPage--;
-    });
-    if (_searchController.text.isNotEmpty) {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPMovies(context, _searchController.text, _listPage);
-    } else {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
-    }
-  }
-
-  void _nextPage() {
-    setState(() {
-      _listPage++;
-    });
-    if (_searchController.text.isNotEmpty) {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPMovies(context, _searchController.text, _listPage);
-    } else {
-      Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
-    }
-  }
-
   Widget _searchBar() {
     return TextField(
       controller: _searchController,
       style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         hintText: 'Pesquise por um filme',
-        hintStyle: const TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.search, color: Colors.white),
-          onPressed: () => _onSearchChanged,
-        ),
+        hintStyle: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),
+        suffixIcon: Icon(Icons.search, color: Colors.white),
         fillColor: CustomTheme.blackSecondary,
-        enabledBorder: const OutlineInputBorder(
+        enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
         ),
-        focusedBorder: const OutlineInputBorder(
+        focusedBorder: OutlineInputBorder(
           borderSide: BorderSide(color: Colors.black),
         ),
       ),
@@ -137,9 +112,18 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
-  Widget _returnButton(Function() onPressed) {
+  Widget _returnButton() {
     return GestureDetector(
-      onTap: () => _returnPage,
+      onTap: () {
+        setState(() {
+          _listPage--;
+        });
+        if (_searchController.text.isNotEmpty) {
+          Provider.of<TheMovieDBProvider>(context, listen: false).fetchPMovies(context, _searchController.text, _listPage);
+        } else {
+          Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
+        }
+      },
       child: GridTile(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6),
@@ -165,9 +149,14 @@ class _MoviesScreenState extends State<MoviesScreen> {
     );
   }
 
-  Widget _nextButton(Function() onPressed) {
+  Widget _nextButton() {
     return GestureDetector(
-      onTap: () => _nextPage,
+      onTap: () {
+        setState(() {
+          _listPage++;
+        });
+        Provider.of<TheMovieDBProvider>(context, listen: false).fetchPopularMovies(context, _listPage);
+      },
       child: GridTile(
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6),
@@ -224,14 +213,14 @@ class _MoviesScreenState extends State<MoviesScreen> {
                         itemCount: moviesProvider.movies.length + 1,
                         itemBuilder: (context, index) {
                           if (showBackButton && index == 0) {
-                            return _returnButton(_returnPage);
+                            return _returnButton();
                           }
                           if (index < moviesProvider.movies.length) {
                             final movie = moviesProvider.movies[index];
                             return _cardMovie(movie, moviesProvider);
                           }
                           if (moviesProvider.movies.length > 19 && _searchController.text.isEmpty) {
-                            return _nextButton(_nextPage);
+                            return _nextButton();
                           }
                           return null;
                         },
