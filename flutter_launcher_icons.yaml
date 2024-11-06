@@ -1,7 +1,11 @@
 flutter_launcher_icons:
-  image_path: "assets/panda.png"
+  android: true
 
-  android: "launcher_icon"
+  image_path: "assets/icon/icon.png"
+  image_path_android: "assets/icon/icon-android.png"
+
+  adaptive_icon_background: "assets/icon/background.png"
+  adaptive_icon_foreground: "assets/icon/icon-foreground.png"
+
+  adaptive_icon_foreground_inset: 16
   min_sdk_android: 21
-  ios: true
-  remove_alpha_channel_ios: true

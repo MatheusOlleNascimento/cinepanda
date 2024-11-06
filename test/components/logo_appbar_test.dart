@@ -9,7 +9,7 @@ void main() {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
-          appBar: const LogoAppbar(),
+          appBar: LogoAppbar(),
         ),
       ),
     );
