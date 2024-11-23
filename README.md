@@ -6,7 +6,6 @@ Pesquise e salve a lista de seus filmes favoritos, desenvolvido como teste para 
 
 ## **Recursos**
 
-- Lista de funcionalidades do aplicativo.
 - Favoritos: Acompanhe a lista dos filmes que você salvou como favoritos, sempre à mão quando quiser rever.
 - Pesquisa: Busque e descubra detalhes dos filmes, incluindo em qual streaming eles estão disponíveis.
 - Me Surpreenda: Sem ideia do que assistir? Clique e deixe que o app te sugira algo inesperado!
