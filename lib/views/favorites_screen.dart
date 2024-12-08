@@ -1,3 +1,4 @@
+import 'package:cine_panda/components/snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -98,9 +99,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   void _shareFavorites() async {
     final favoriteMovies = await context.read<DatabaseProvider>().getFavorites();
     if (favoriteMovies.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Nenhum filme favorito para compartilhar', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
-      );
+      snackbar(context, 'Nenhum filme favorito para compartilhar');
       return;
     }
 
@@ -108,9 +107,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     var message = favoriteShareMessage(link);
 
     Clipboard.setData(ClipboardData(text: message)).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Link copiado para a área de transferência', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
-      );
+      snackbar(context, 'Link copiado para a área de transferência');
     });
   }
 
@@ -139,9 +136,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 final input = controller.text.trim();
 
                 if (input.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Cole o link para importar', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
-                  );
+                  snackbar(context, 'Cole o link para importar');
                   return;
                 }
 
@@ -150,20 +145,14 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   final favoriteMovies = decompressFavorites(data);
 
                   if (favoriteMovies.isEmpty) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Nenhum filme encontrado para importar', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
-                    );
+                    snackbar(context, 'Nenhum filme encontrado para importar');
                   } else {
                     await context.read<DatabaseProvider>().addFavorites(favoriteMovies);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('${favoriteMovies.length} filmes importados com sucesso!', style: const TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
-                    );
+                    snackbar(context, '${favoriteMovies.length} filmes importados com sucesso');
                     Navigator.pop(context);
                   }
                 } catch (e) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Erro ao importar favoritos. Verifique o código!', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
-                  );
+                  snackbar(context, 'Erro ao importar favoritos. Verifique o código');
                 }
               },
               child: const Text('Importar'),
