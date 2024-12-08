@@ -14,6 +14,7 @@ class TheMovieDBProvider extends ChangeNotifier {
 
   Future<void> fetchPMovies(BuildContext context, String query, int page) async {
     if (query.isEmpty) {
+      _movies = [];
       notifyListeners();
       return;
     }
@@ -24,7 +25,7 @@ class TheMovieDBProvider extends ChangeNotifier {
     try {
       _movies = await apiService.fetchPMovies(query, page);
     } catch (e) {
-      Exception(e);
+      _movies = [];
     } finally {
       _isLoading = false;
       notifyListeners();

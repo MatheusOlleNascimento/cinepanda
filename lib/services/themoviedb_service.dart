@@ -18,12 +18,20 @@ class ThemoviedbService {
   }
 
   Future<List<Movie>> fetchPMovies(String query, int page) async {
-    final response = await _httpGet('$apiUrl/search/movie?query=$query&language=pt-BR&page=$page');
+    final encodedQuery = Uri.encodeComponent(query);
+    final response = await _httpGet('$apiUrl/search/movie?query=$encodedQuery&include_adult=false&language=pt-BR&page=$page');
 
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
-      if (moviesJson.isEmpty) return [];
-      return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
+
+      // Filtra os filmes com poster_path nulo e outros valores nulos
+      final filteredMovies = moviesJson.where((movie) {
+        return movie['poster_path'] != null && movie['title'] != null && movie['id'] != null;
+      }).toList();
+
+      if (filteredMovies.isEmpty) return [];
+
+      return filteredMovies.map((movie) => Movie.fromJson(movie)).toList();
     } else {
       throw Exception('Não foi possível buscar os filmes');
     }
@@ -34,7 +42,13 @@ class ThemoviedbService {
 
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
-      return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
+
+      // Filtra os filmes com poster_path nulo e outros valores nulos
+      final filteredMovies = moviesJson.where((movie) {
+        return movie['poster_path'] != null && movie['title'] != null && movie['id'] != null;
+      }).toList();
+
+      return filteredMovies.map((movie) => Movie.fromJson(movie)).toList();
     } else {
       throw Exception('Não foi possível buscar os filmes mais populares');
     }
@@ -42,9 +56,15 @@ class ThemoviedbService {
 
   Future<MovieDetails> fetchMovieDetails(int id) async {
     final response = await _httpGet('$apiUrl/movie/$id?language=pt-BR');
-
     if (response.statusCode == 200) {
-      return MovieDetails.fromJson(jsonDecode(response.body));
+      final movieDetailsJson = jsonDecode(response.body);
+
+      // Verifica se os dados essenciais estão presentes
+      if (movieDetailsJson['id'] != null) {
+        return MovieDetails.fromJson(movieDetailsJson);
+      } else {
+        throw Exception('Detalhes do filme não encontrados');
+      }
     } else {
       throw Exception('Não foi possível buscar os detalhes do filme');
     }
@@ -58,12 +78,13 @@ class ThemoviedbService {
 
       if (providersJson.containsKey('BR')) {
         final brProvidersJson = providersJson['BR'];
-
         final List<MovieProvider> providers = [];
 
         if (brProvidersJson['flatrate'] != null) {
           for (var provider in brProvidersJson['flatrate']) {
-            providers.add(MovieProvider.fromJson(provider));
+            if (provider['provider_name'] != null) {
+              providers.add(MovieProvider.fromJson(provider));
+            }
           }
         }
         return providers;
@@ -80,7 +101,13 @@ class ThemoviedbService {
 
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
-      return moviesJson.map((movie) => Movie.fromJson(movie)).toList();
+
+      // Filtra os filmes com poster_path nulo e outros valores nulos
+      final filteredMovies = moviesJson.where((movie) {
+        return movie['poster_path'] != null && movie['title'] != null && movie['id'] != null;
+      }).toList();
+
+      return filteredMovies.map((movie) => Movie.fromJson(movie)).toList();
     } else {
       throw Exception('Não foi possível buscar um filme para você');
     }
