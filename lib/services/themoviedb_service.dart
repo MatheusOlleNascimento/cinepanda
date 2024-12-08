@@ -18,7 +18,7 @@ class ThemoviedbService {
   }
 
   Future<List<Movie>> fetchPMovies(String query, int page) async {
-    final response = await _httpGet('$apiUrl/search/movie?query=$query&include_adult=false&language=pt-BR&page=$page');
+    final response = await _httpGet('$apiUrl/search/movie?query=$query&language=pt-BR&page=$page');
 
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
@@ -41,7 +41,7 @@ class ThemoviedbService {
   }
 
   Future<MovieDetails> fetchMovieDetails(int id) async {
-    final response = await _httpGet('$apiUrl/movie/$id?language=pt-BR?include_adult=false');
+    final response = await _httpGet('$apiUrl/movie/$id?language=pt-BR');
 
     if (response.statusCode == 200) {
       return MovieDetails.fromJson(jsonDecode(response.body));
@@ -51,7 +51,7 @@ class ThemoviedbService {
   }
 
   Future<List<MovieProvider>> fetchWatchProviders(int id) async {
-    final response = await _httpGet('$apiUrl/movie/$id/watch/providers?include_adult=false');
+    final response = await _httpGet('$apiUrl/movie/$id/watch/providers');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> providersJson = jsonDecode(response.body)['results'];
@@ -76,7 +76,7 @@ class ThemoviedbService {
   }
 
   Future<List<Movie>> fetchDiscoverMovies(int page) async {
-    final response = await _httpGet('$apiUrl/discover/movie?include_adult=false&language=pt-BR&page=$page&sort_by=popularity.desc');
+    final response = await _httpGet('$apiUrl/discover/movie?language=pt-BR&page=$page&sort_by=popularity.desc');
 
     if (response.statusCode == 200) {
       final List<dynamic> moviesJson = jsonDecode(response.body)['results'];
@@ -87,7 +87,7 @@ class ThemoviedbService {
   }
 
   Future<String?> fetchYoutubeTrailer(int id) async {
-    final response = await _httpGet('$apiUrl/movie/$id/videos?include_adult=false?language=pt-BR');
+    final response = await _httpGet('$apiUrl/movie/$id/videos?language=pt-BR');
 
     if (response.statusCode == 200) {
       final List<dynamic> trailersJson = jsonDecode(response.body)['results'];

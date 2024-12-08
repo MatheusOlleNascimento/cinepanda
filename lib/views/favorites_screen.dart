@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
-import '../imports/database.dart';
 import '../imports/models.dart';
 import '../imports/providers.dart';
 import '../imports/styles.dart';
+import '../imports/utils.dart';
 import '../imports/views.dart';
 
 class FavoritesScreen extends StatefulWidget {
@@ -60,8 +61,118 @@ Widget _notFound() {
   );
 }
 
+Widget _favorites(AsyncSnapshot<List<Movie>> snapshot, String searchQuery) {
+  final favoriteMovies = snapshot.data!.where((movie) => movie.title.toLowerCase().contains(searchQuery)).toList();
+
+  return ListView.builder(
+    itemCount: favoriteMovies.length,
+    itemBuilder: (context, index) {
+      final movie = favoriteMovies[index];
+      return Consumer<TheMovieDBProvider>(
+        builder: (context, moviesProvider, child) => Padding(
+          padding: const EdgeInsets.symmetric(vertical: 5),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(10),
+            leading: AspectRatio(
+              aspectRatio: 2 / 3,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(2),
+                child: Image.network(
+                  moviesProvider.getImageUrl(movie.posterPath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+            title: Text(movie.title),
+            onTap: () => _navigateToMovieDetails(context, movie.id),
+          ),
+        ),
+      );
+    },
+  );
+}
+
 class _FavoritesScreenState extends State<FavoritesScreen> {
   String searchQuery = '';
+
+  void _shareFavorites() async {
+    final favoriteMovies = await context.read<DatabaseProvider>().getFavorites();
+    if (favoriteMovies.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Nenhum filme favorito para compartilhar', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
+      );
+      return;
+    }
+
+    var link = compactFavorites(favoriteMovies);
+    var message = favoriteShareMessage(link);
+
+    Clipboard.setData(ClipboardData(text: message)).then((_) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Link copiado para a área de transferência', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
+      );
+    });
+  }
+
+  void _importFavorites() async {
+    final controller = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Importar Favoritos'),
+          content: TextField(
+            controller: controller,
+            decoration: const InputDecoration(
+              hintText: 'Cole aqui o código ou link',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancelar'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final input = controller.text.trim();
+
+                if (input.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Cole o link para importar', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
+                  );
+                  return;
+                }
+
+                try {
+                  final data = extractCompactString(input);
+                  final favoriteMovies = decompressFavorites(data);
+
+                  if (favoriteMovies.isEmpty) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Nenhum filme encontrado para importar', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
+                    );
+                  } else {
+                    await context.read<DatabaseProvider>().addFavorites(favoriteMovies);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('${favoriteMovies.length} filmes importados com sucesso!', style: const TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
+                    );
+                    Navigator.pop(context);
+                  }
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Erro ao importar favoritos. Verifique o código!', style: TextStyle(color: CustomTheme.red)), backgroundColor: CustomTheme.grey),
+                  );
+                }
+              },
+              child: const Text('Importar'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,10 +192,28 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   });
                 }),
                 const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: _importFavorites,
+                      icon: const Icon(Icons.download),
+                      label: const Text('Importar'),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () async {
+                        _shareFavorites();
+                      },
+                      icon: const Icon(Icons.share),
+                      label: const Text('Compartilhar'),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
                 Expanded(
                   child: Consumer<DatabaseProvider>(
                     builder: (context, moviesProvider, child) => FutureBuilder<List<Movie>>(
-                      future: DatabaseHelper().getFavorites(),
+                      future: context.read<DatabaseProvider>().getFavorites(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return const Center(child: CircularProgressIndicator());
@@ -93,34 +222,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                           return _notFound();
                         } else {
-                          final favoriteMovies = snapshot.data!.where((movie) => movie.title.toLowerCase().contains(searchQuery)).toList();
-
-                          return ListView.builder(
-                            itemCount: favoriteMovies.length,
-                            itemBuilder: (context, index) {
-                              final movie = favoriteMovies[index];
-                              return Consumer<TheMovieDBProvider>(
-                                builder: (context, moviesProvider, child) => Padding(
-                                  padding: const EdgeInsets.symmetric(vertical: 5),
-                                  child: ListTile(
-                                    contentPadding: const EdgeInsets.all(10),
-                                    leading: AspectRatio(
-                                      aspectRatio: 2 / 3,
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(2),
-                                        child: Image.network(
-                                          moviesProvider.getImageUrl(movie.posterPath),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(movie.title),
-                                    onTap: () => _navigateToMovieDetails(context, movie.id),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
+                          return _favorites(snapshot, searchQuery);
                         }
                       },
                     ),

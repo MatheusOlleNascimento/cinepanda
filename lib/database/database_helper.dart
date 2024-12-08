@@ -36,6 +36,20 @@ class DatabaseHelper {
     );
   }
 
+  Future<void> addFavorites(List<Movie> movies) async {
+    final db = await database;
+
+    await db.transaction((txn) async {
+      for (final movie in movies) {
+        await txn.insert(
+          'favorites',
+          movie.toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+      }
+    });
+  }
+
   Future<void> removeFavorite(int id) async {
     final db = await database;
     await db.delete(

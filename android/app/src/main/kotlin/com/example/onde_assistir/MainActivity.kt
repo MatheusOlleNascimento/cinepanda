@@ -1,4 +1,4 @@
-package com.example.cine_panda
+package cc.monow.cine_panda
 
 import io.flutter.embedding.android.FlutterActivity
 
