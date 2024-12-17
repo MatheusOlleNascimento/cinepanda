@@ -1,7 +1,7 @@
 name: cine_panda
 description: "Veja onde assistir seus filmes favoritos."
 publish_to: "none"
-version: 1.0.0+3
+version: 1.0.0+4
 environment:
     sdk: ^3.5.3
 dependencies:
